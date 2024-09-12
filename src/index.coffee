@@ -16,7 +16,7 @@ Default =
   run: ( name ) ->
     ( talos ) ->
       title = Format.title name
-      talos.context.updates.push ( state ) ->
+      talos.context.state.plan ( state ) ->
         Object.assign state, { name, title }
 
 navigate = ( action ) ->
@@ -26,20 +26,15 @@ navigate = ( action ) ->
     await action talos, event
 
     if Type.isString talos.state
-      talos.context.updates.push Fn.tee ( state ) ->
+      talos.context.state.plan Fn.tee ( state ) ->
         state.forward = []
         state.back.push talos.state
 
 apply = ( action ) ->
 
   ( talos, events ) ->
-    
     await action talos, events
-
-    if talos.context.updates.length > 0
-      await talos.context.state.update ( Fn.pipe talos.context.updates )
-
-    talos.context.updates = []
+    await talos.context.state.commit()
 
 Machine =
 
@@ -71,22 +66,22 @@ Machine =
             move: ( talos, event ) ->
               _state = talos.state
               talos.state = talos.context.state.get().back.pop()
-              talos.context.updates.push Fn.tee ( state ) ->
+              talos.context.state.plan Fn.tee ( state ) ->
                 state.back.pop()
                 state.forward.push _state
-              ( apply _transitions[ talos.state ].run ) talos, 
-                name: talos.state, context: {}
+              _action = apply _transitions[ talos.state ].run
+              _action talos, name: talos.state, context: {}
 
           _result[ state ].forward =
             when: Default.when "forward"
             move: ( talos, event ) ->
               _state = talos.state
               talos.state = talos.context.state.get().forward.pop()
-              talos.context.updates.push Fn.tee ( state ) ->
+              talos.context.state.plan Fn.tee ( state ) ->
                 state.forward.pop()
                 state.back.push _state
-              ( apply _transitions[ talos.state ].run ) talos, 
-                name: talos.state, context: {}
+              _action = apply _transitions[ talos.state ].run
+              _action talos, name: talos.state, context: {}
 
         _result
 
@@ -99,7 +94,7 @@ Machine =
         event = await do queue.dequeue
         yield event
 
-    context = { state, updates: [] }
+    context = { state }
 
     do ->
 
