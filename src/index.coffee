@@ -42,7 +42,7 @@ Machine =
   
     do ({ state, transitions, transition, _transitions, _result } = {}) ->
 
-      $Machine.make "sansa-image-select", do ->
+      $Machine.make specifier.name, do ->
 
         _transitions = {}
         _result = {}
@@ -102,7 +102,6 @@ Machine =
         if talos.error?
           console.error talos.error
           console.warn { talos }
-    queue.enqueue name: "home"
     queue
 
 export default Machine
