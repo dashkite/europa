@@ -1,4 +1,5 @@
 import * as Fn from "@dashkite/joy/function"
+import * as Arr from "@dashkite/joy/array"
 import * as Type from "@dashkite/joy/type"
 import { Queue } from "@dashkite/joy/iterable"
 import { Machine as $Machine, Async } from "@dashkite/talos"
@@ -65,9 +66,11 @@ Machine =
             when: Default.when "back"
             move: ( talos, event ) ->
               _state = talos.state
-              talos.state = talos.context.state.get().back.pop()
+              _back = talos.context.state.get().back
+              while ( _back.length > 0 ) && ( _state == talos.state )
+                talos.state = _back.pop()
               talos.context.state.plan Fn.tee ( state ) ->
-                state.back.pop()
+                state.back = _back
                 state.forward.push _state
               _action = apply _transitions[ talos.state ].run
               _action talos, name: talos.state, context: {}
