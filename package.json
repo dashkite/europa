@@ -40,6 +40,7 @@
     "@dashkite/genie-module": "link:../genie-module"
   },
   "dependencies": {
+    "@dashkite/format-text": "link:../format-text",
     "@dashkite/joy": "link:../joy",
     "@dashkite/rio-arriba": "link:../rio-arriba",
     "@dashkite/talos": "^0.0.3"

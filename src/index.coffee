@@ -3,7 +3,7 @@ import * as Arr from "@dashkite/joy/array"
 import * as Type from "@dashkite/joy/type"
 import { Queue } from "@dashkite/joy/iterable"
 import { Machine as $Machine, Async } from "@dashkite/talos"
-import * as Format from "@dashkite/rio-arriba/format"
+import Format from "@dashkite/format-text"
 
 Default =
 
