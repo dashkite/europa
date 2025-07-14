@@ -41,7 +41,7 @@
     "@dashkite/genie-release": "^0.2.8"
   },
   "dependencies": {
-    "@dashkite/format-text": "link:../format-text",
+    "@dashkite/format-text": "0.3.0",
     "@dashkite/joy": "0.5.0",
     "@dashkite/rio-arriba": "link:../rio-arriba",
     "@dashkite/talos": "^0.0.3"
